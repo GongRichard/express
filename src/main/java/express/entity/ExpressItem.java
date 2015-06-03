@@ -17,9 +17,11 @@ public class ExpressItem {
   @Id
   ObjectId id;
 
+  /** for DB storage */
   @JsonIgnore
-  private int state;
+  private int state = 0;
 
+  /** for business logic */
   @Transient
   private ExpressItemStateEnum stateEnum;
 
@@ -27,10 +29,13 @@ public class ExpressItem {
   private ExpressBill expressBill;
 
   private String expressNumber;
-  
+
   private Date sccanedDate;
-  
+
   private Date recievedDate;
+
+  public ExpressItem() {
+  }
 
   public ObjectId getId() {
     return id;
@@ -49,11 +54,13 @@ public class ExpressItem {
   }
 
   public ExpressItemStateEnum getStateEnum() {
+    this.stateEnum = this.stateEnum.getByFlag(this.state);
     return stateEnum;
   }
 
   public void setStateEnum(ExpressItemStateEnum stateEnum) {
     this.stateEnum = stateEnum;
+    this.state = this.stateEnum == null ? 0 : this.stateEnum.getFlag();
   }
 
   public ExpressBill getExpressBill() {
