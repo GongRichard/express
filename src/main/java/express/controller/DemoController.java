@@ -2,6 +2,8 @@ package express.controller;
 
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.Key;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -49,7 +51,8 @@ public class DemoController {
     item.setRecievedDate(new Date());
     item.setSccanedDate(new Date());
     item.setStateEnum(ExpressItemStateEnum.SCANNED);
-    return this.expressItemDAO.saveExpressItem(item);
+    Key<ExpressItem> result = this.expressItemDAO.getBasicDAO().save(item);
+    return item;
   }
 
 }

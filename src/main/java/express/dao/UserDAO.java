@@ -2,6 +2,8 @@ package express.dao;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.mongodb.morphia.Datastore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,6 +15,12 @@ public class UserDAO {
 
   @Autowired
   private Datastore datastore;
+
+  private UserBasicDAO basicDAO;
+
+  public UserBasicDAO getBasicDAO() {
+    return basicDAO;
+  }
 
   public User saveUser(User user) {
     this.datastore.save(user);
@@ -33,5 +41,10 @@ public class UserDAO {
 
   public User getUserByEmployeeId(String employeeId) {
     return datastore.find(User.class, "employeeId", employeeId).get();
+  }
+
+  @PostConstruct
+  public void init() {
+    this.basicDAO = new UserBasicDAO(this.datastore);
   }
 }
