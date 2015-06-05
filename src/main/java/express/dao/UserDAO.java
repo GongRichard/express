@@ -5,6 +5,9 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.query.Criteria;
+import org.mongodb.morphia.query.Query;
+import org.mongodb.morphia.query.QueryResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -41,6 +44,22 @@ public class UserDAO {
 
   public User getUserByEmployeeId(String employeeId) {
     return datastore.find(User.class, "employeeId", employeeId).get();
+  }
+
+  public List<User> FindByFields(String email, String employeeId,
+      String mobilePhone) {
+    Query<User> q = this.basicDAO.createQuery();
+    if (!email.isEmpty()) {
+      q = q.filter("email =", email);
+    }
+    if (!employeeId.isEmpty()) {
+      q = q.filter("employeeId =", employeeId);
+    }
+    if (!mobilePhone.isEmpty()) {
+      q = q.filter("mobilePhone =", mobilePhone);
+    }
+    QueryResults<User> results = this.basicDAO.find(q);
+    return results.asList();
   }
 
   @PostConstruct
