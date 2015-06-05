@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import express.dao.ExpressBillDAO;
 import express.dao.ExpressItemDAO;
 import express.dao.UserDAO;
+import express.entity.ExpressBill;
 import express.entity.ExpressItem;
 import express.entity.ExpressItemStateEnum;
 import express.entity.User;
@@ -23,6 +25,9 @@ public class DemoController {
   
   @Autowired
   ExpressItemDAO expressItemDAO;
+  
+  @Autowired
+  ExpressBillDAO expressBillAO;
 
   @RequestMapping("/login")
   public String login(@RequestParam("username") String username) {
@@ -46,11 +51,16 @@ public class DemoController {
   
   @RequestMapping("/createItemTest")
   public ExpressItem createItemTest() {
+    ExpressBill bill = new ExpressBill();
+    bill.setMobilePhone("18616703467");
+    bill.setOrderNumber("1221323");
+    this.expressBillAO.getBasicDAO().save(bill);
     ExpressItem item = new ExpressItem();
     item.setExpressNumber("1");
     item.setRecievedDate(new Date());
     item.setSccanedDate(new Date());
     item.setStateEnum(ExpressItemStateEnum.SCANNED);
+    item.setExpressBill(bill);
     Key<ExpressItem> result = this.expressItemDAO.getBasicDAO().save(item);
     return item;
   }
