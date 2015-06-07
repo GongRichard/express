@@ -1,6 +1,11 @@
 package express.dao;
 
+import javax.annotation.PostConstruct;
+
+import org.mongodb.morphia.Datastore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -8,13 +13,22 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import express.config.SpringMongoConfig;
 import express.entity.SequenceId;
 
 @Repository
 public class SequenceDAO {
+  
+  public static final String SEQUENCE_USER = "User";
+
+  public static final String SEQUENCE_EXPRESS_ITEM = "ExpressItem";
+
+  public static final String SEQUENCE_EXPRESS_BILL = "ExpressBill";
+
+  private MongoOperations mongoOperation;
 
   @Autowired
-  private MongoOperations mongoOperation;
+  private Datastore datastore;
 
   public long getNextSequenceId(String key) throws Exception {
 
@@ -42,6 +56,16 @@ public class SequenceDAO {
 
     return seqId.getSeq();
 
+  }
+
+  @PostConstruct
+  public void init() {
+    if (this.mongoOperation == null) {
+      @SuppressWarnings("resource")
+      ApplicationContext ctx = new AnnotationConfigApplicationContext(
+          SpringMongoConfig.class);
+      this.mongoOperation = (MongoOperations) ctx.getBean("mongoTemplate");
+    }
   }
 
 }

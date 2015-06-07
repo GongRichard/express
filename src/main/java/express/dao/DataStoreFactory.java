@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 
 import com.mongodb.MongoClient;
 
+import express.config.SpringMongoConfig;
+
 @Repository
 public class DataStoreFactory {
 
@@ -19,7 +21,7 @@ public class DataStoreFactory {
   @PostConstruct
   void init() throws UnknownHostException {
     datastore = new Morphia().mapPackage("express.entity").createDatastore(
-        new MongoClient(), "express");
+        new MongoClient(), SpringMongoConfig.DB);
   }
 
   @Bean

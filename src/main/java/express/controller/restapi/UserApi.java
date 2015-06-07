@@ -48,7 +48,7 @@ public class UserApi {
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
       @RequestParam(value = "employeeId", defaultValue = "") String employeeId)
       throws Exception {
-    long userId = this.sequenceDAO.getNextSequenceId("user");
+    long userId = this.sequenceDAO.getNextSequenceId(SequenceDAO.SEQUENCE_USER);
     User user = new User(userId, mobilePhone, email, employeeId);
     this.userDAO.getBasicDAO().save(user);
     return user.getUserId();

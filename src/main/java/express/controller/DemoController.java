@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import express.controller.restapi.UserApi;
 import express.dao.ExpressBillDAO;
 import express.dao.ExpressItemDAO;
 import express.dao.UserDAO;
@@ -22,10 +23,13 @@ public class DemoController {
 
   @Autowired
   UserDAO userDAO;
-  
+
+  @Autowired
+  UserApi userApi;
+
   @Autowired
   ExpressItemDAO expressItemDAO;
-  
+
   @Autowired
   ExpressBillDAO expressBillAO;
 
@@ -35,12 +39,15 @@ public class DemoController {
   }
 
   @RequestMapping("/createUserTest")
-  public User createUserTest() {
+  public User createUserTest() throws Exception {
     User user = new User();
     user.setEmail("zonghan.wu@sap.com");
     user.setEmployeeId("I303152");
     user.setMobilePhone("18616703467");
-    return this.userDAO.saveUser(user);
+    long userId = this.userApi.userCreate(user.getEmail(),
+        user.getMobilePhone(), user.getEmployeeId());
+    user.setUserId(userId);
+    return user;
   }
 
   @RequestMapping("/getUserByEmployeeIdTest")
@@ -48,7 +55,7 @@ public class DemoController {
     User user = this.userDAO.getUserByEmployeeId("I303152");
     return this.userDAO.saveUser(user);
   }
-  
+
   @RequestMapping("/createItemTest")
   public ExpressItem createItemTest() {
     ExpressBill bill = new ExpressBill();
