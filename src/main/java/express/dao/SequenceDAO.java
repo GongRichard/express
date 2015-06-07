@@ -18,12 +18,6 @@ import express.entity.SequenceId;
 
 @Repository
 public class SequenceDAO {
-  
-  public static final String SEQUENCE_USER = "User";
-
-  public static final String SEQUENCE_EXPRESS_ITEM = "ExpressItem";
-
-  public static final String SEQUENCE_EXPRESS_BILL = "ExpressBill";
 
   private MongoOperations mongoOperation;
 
@@ -46,16 +40,13 @@ public class SequenceDAO {
     // this is the magic happened.
     SequenceId seqId = mongoOperation.findAndModify(query, update, options,
         SequenceId.class);
-
     // if no id, throws SequenceException
     // optional, just a way to tell user when the sequence id is failed to
     // generate.
     if (seqId == null) {
       throw new Exception("Unable to get sequence id for key : " + key);
     }
-
     return seqId.getSeq();
-
   }
 
   @PostConstruct

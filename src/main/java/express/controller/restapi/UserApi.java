@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import express.dao.SequenceDAO;
 import express.dao.UserDAO;
+import express.entity.SequenceId;
 import express.entity.User;
 
 @RestController
@@ -48,7 +49,7 @@ public class UserApi {
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
       @RequestParam(value = "employeeId", defaultValue = "") String employeeId)
       throws Exception {
-    long userId = this.sequenceDAO.getNextSequenceId(SequenceDAO.SEQUENCE_USER);
+    long userId = this.sequenceDAO.getNextSequenceId(SequenceId.SEQUENCE_USER);
     User user = new User(userId, mobilePhone, email, employeeId);
     this.userDAO.getBasicDAO().save(user);
     return user.getUserId();
