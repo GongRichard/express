@@ -15,9 +15,19 @@ public class ExpressBill {
   @Id
   ObjectId id;
 
+  private long expressBillId;
+
   private String orderNumber;
 
   private String mobilePhone;
+
+  public ExpressBill(){}
+  
+  public ExpressBill(String orderNumber, String mobilePhone) {
+    super();
+    this.orderNumber = orderNumber;
+    this.mobilePhone = mobilePhone;
+  }
 
   public ObjectId getId() {
     return id;
@@ -25,6 +35,14 @@ public class ExpressBill {
 
   public void setId(ObjectId id) {
     this.id = id;
+  }
+
+  public long getExpressBillId() {
+    return expressBillId;
+  }
+
+  public void setExpressBillId(long expressBillId) {
+    this.expressBillId = expressBillId;
   }
 
   public String getOrderNumber() {

@@ -1,5 +1,7 @@
 package express.dao;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.bson.types.ObjectId;
@@ -12,13 +14,14 @@ import org.springframework.stereotype.Repository;
 import com.mongodb.Mongo;
 
 import express.entity.ExpressItem;
+import express.entity.ExpressItemStateEnum;
 
 @Repository
 public class ExpressItemDAO {
 
   @Autowired
   private Datastore datastore;
-  
+
   private ExpressItemBasicDAO basicDAO;
 
   public ExpressItemBasicDAO getBasicDAO() {
@@ -29,7 +32,17 @@ public class ExpressItemDAO {
     this.datastore.save(expressItem);
     return expressItem;
   }
-  
+
+  public List<ExpressItem> findByExpressNumber(String expressNumber) {
+    return this.datastore.find(ExpressItem.class, "expressNumber",
+        expressNumber).asList();
+  }
+
+  public List<ExpressItem> findByStateEnum(ExpressItemStateEnum stateEnum) {
+    int state = stateEnum.getFlag();
+    return this.datastore.find(ExpressItem.class, "state", state).asList();
+  }
+
   @PostConstruct
   public void init() {
     this.basicDAO = new ExpressItemBasicDAO(this.datastore);
