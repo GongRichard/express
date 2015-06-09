@@ -33,9 +33,6 @@ public class ExpressItemApi {
   @Autowired
   private ExpressItemDAO expressItemDAO;
 
-  @Autowired
-  private ExpressBillDAO expressBillDAO;
-
   @RequestMapping(value = "/expressItem/{expressItemId}", method = RequestMethod.GET)
   public List<ExpressItem> expressItemById(@PathVariable long expressItemId) {
     if (expressItemId == 0)
@@ -66,10 +63,7 @@ public class ExpressItemApi {
       @RequestParam(value = "orderNumber", defaultValue = "") String orderNumber,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone)
       throws Exception {
-    long expressBillId = this.sequenceDAO
-        .getNextSequenceId(SequenceId.SEQUENCE_EXPRESS_BILL);
     ExpressBill bill = new ExpressBill(orderNumber, mobilePhone);
-    this.expressBillDAO.getBasicDAO().save(bill);
     long expressItemId = this.sequenceDAO
         .getNextSequenceId(SequenceId.SEQUENCE_EXPRESS_ITEM);
     ExpressItem item = new ExpressItem(stateEnum, bill, expressNumber,
@@ -93,11 +87,9 @@ public class ExpressItemApi {
     item.setExpressNumber(expressNumber);
     item.setSccanedDate(new Date(sccanedDateLong));
     item.setRecievedDate(new Date(recievedDateLong));
-    ExpressBill bill = this.expressBillDAO.findByExpressBillId(
-        item.getExpressBill().getExpressBillId()).get(0);
+    ExpressBill bill = item.getExpressBill();
     bill.setMobilePhone(mobilePhone);
     bill.setOrderNumber(orderNumber);
-    this.expressBillDAO.getBasicDAO().save(bill);
     this.expressItemDAO.getBasicDAO().save(item);
     return item.getExpressItemId();
   }

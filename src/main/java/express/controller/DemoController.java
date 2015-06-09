@@ -30,9 +30,6 @@ public class DemoController {
   @Autowired
   ExpressItemDAO expressItemDAO;
 
-  @Autowired
-  ExpressBillDAO expressBillAO;
-
   @RequestMapping("/login")
   public String login(@RequestParam("username") String username) {
     return username;
@@ -61,7 +58,6 @@ public class DemoController {
     ExpressBill bill = new ExpressBill();
     bill.setMobilePhone("18616703467");
     bill.setOrderNumber("1221323");
-    this.expressBillAO.getBasicDAO().save(bill);
     ExpressItem item = new ExpressItem();
     item.setExpressNumber("1");
     item.setRecievedDate(new Date());

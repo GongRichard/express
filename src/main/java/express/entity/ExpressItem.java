@@ -27,13 +27,14 @@ public class ExpressItem {
   @Transient
   private ExpressItemStateEnum stateEnum;
 
-  @Reference
   private ExpressBill expressBill;
 
   private String expressNumber;
 
+  @JsonIgnore
   private Date sccanedDate;
 
+  @JsonIgnore
   private Date recievedDate;
 
   public ExpressItem() {

@@ -9,8 +9,6 @@ public class SequenceId {
   public static final String SEQUENCE_USER = "User";
   
   public static final String SEQUENCE_EXPRESS_ITEM = "ExpressItem";
-  
-  public static final String SEQUENCE_EXPRESS_BILL = "ExpressBill";
 
   @Id
   private String id;

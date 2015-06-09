@@ -40,8 +40,6 @@ public class UpgradeController {
       this.mongoOperation.save(sequenceUser);
       SequenceId sequenceExpressItem = new SequenceId(SequenceId.SEQUENCE_EXPRESS_ITEM, 0);
       this.mongoOperation.save(sequenceExpressItem);
-      SequenceId sequenceBill = new SequenceId(SequenceId.SEQUENCE_EXPRESS_BILL, 0);
-      this.mongoOperation.save(sequenceBill);
     }
     
   }

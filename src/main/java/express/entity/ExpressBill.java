@@ -1,21 +1,6 @@
 package express.entity;
 
-import java.util.Date;
-
-import org.bson.types.ObjectId;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.Id;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity
 public class ExpressBill {
-
-  @JsonIgnore
-  @Id
-  ObjectId id;
-
-  private long expressBillId;
 
   private String orderNumber;
 
@@ -27,22 +12,6 @@ public class ExpressBill {
     super();
     this.orderNumber = orderNumber;
     this.mobilePhone = mobilePhone;
-  }
-
-  public ObjectId getId() {
-    return id;
-  }
-
-  public void setId(ObjectId id) {
-    this.id = id;
-  }
-
-  public long getExpressBillId() {
-    return expressBillId;
-  }
-
-  public void setExpressBillId(long expressBillId) {
-    this.expressBillId = expressBillId;
   }
 
   public String getOrderNumber() {
