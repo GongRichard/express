@@ -19,12 +19,10 @@ import express.entity.ExpressItem;
 import express.entity.ExpressItemStateEnum;
 import express.entity.SequenceId;
 import express.entity.User;
+import express.service.hystrix.ExpressItemSearch;
 
 @RestController
 public class ExpressItemApi {
-
-  @Autowired
-  private UserDAO userDAO;
 
   @Autowired
   private SequenceDAO sequenceDAO;
@@ -36,22 +34,16 @@ public class ExpressItemApi {
   public List<ExpressItem> expressItemById(@PathVariable long expressItemId) {
     if (expressItemId == 0)
       return null;
-    Query<ExpressItem> q = this.expressItemDAO.getBasicDAO().createQuery()
-        .filter("expressItemId =", expressItemId);
-    return this.expressItemDAO.getBasicDAO().find(q).asList();
+    return new ExpressItemSearch(expressItemDAO, expressItemId, null, null)
+        .execute();
   }
 
   @RequestMapping(value = "/expressItem", method = RequestMethod.GET)
   public List<ExpressItem> expressItem(
       @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
       @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum) {
-    if (!expressNumber.isEmpty()) {
-      return this.expressItemDAO.findByExpressNumber(expressNumber);
-    } else if (stateEnum != null) {
-      return this.expressItemDAO.findByStateEnum(stateEnum);
-    } else {
-      return this.expressItemDAO.getBasicDAO().find().asList();
-    }
+    return new ExpressItemSearch(expressItemDAO, 0, expressNumber, stateEnum)
+        .execute();
   }
 
   @RequestMapping(value = "/expressItem", method = RequestMethod.POST)
