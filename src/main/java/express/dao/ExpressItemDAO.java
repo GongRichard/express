@@ -8,6 +8,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.dao.BasicDAO;
+import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -41,6 +42,12 @@ public class ExpressItemDAO {
   public List<ExpressItem> findByStateEnum(ExpressItemStateEnum stateEnum) {
     int state = stateEnum.getFlag();
     return this.datastore.find(ExpressItem.class, "state", state).asList();
+  }
+
+  public List<ExpressItem> findByExpressItemId(long expressItemId) {
+    Query<ExpressItem> q = this.getBasicDAO().createQuery()
+        .filter("expressItemId =", expressItemId);
+    return this.getBasicDAO().find(q).asList();
   }
 
   @PostConstruct

@@ -2,7 +2,7 @@ package express.entity;
 
 public enum ExpressItemStateEnum {
 
-  SCANNED(1), RECIEVED(2);
+  NONE(0), SCANNED(1), RECIEVED(2);
 
   private int flag;
 
