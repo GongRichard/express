@@ -38,15 +38,15 @@ public class UserUpsert extends HystrixCommand<Long> {
 
   @Override
   protected Long run() throws Exception {
-    if (this.userId > 0) {
-      // update
+    if (this.userId <= 0) {
+      // insert
       long nextUserId = this.sequenceDAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
       User user = new User(nextUserId, mobilePhone, email, employeeId);
       this.userDAO.getBasicDAO().save(user);
       return user.getUserId();
     } else {
-      // insert
+      // update
       Query<User> q = this.userDAO.getBasicDAO().createQuery()
           .filter("userId =", userId);
       User user = this.userDAO.getBasicDAO().find(q).get();
