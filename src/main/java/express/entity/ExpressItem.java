@@ -23,10 +23,6 @@ public class ExpressItem {
   @JsonIgnore
   private int state = 0;
 
-  /** for business logic */
-  @Transient
-  private ExpressItemStateEnum stateEnum;
-
   private ExpressBill expressBill;
 
   private String expressNumber;
@@ -43,8 +39,7 @@ public class ExpressItem {
   public ExpressItem(ExpressItemStateEnum stateEnum, ExpressBill expressBill,
       String expressNumber, Date sccanedDate) {
     super();
-    this.stateEnum = stateEnum;
-    this.state = this.stateEnum.getFlag();
+    this.state = stateEnum.getFlag();
     this.expressBill = expressBill;
     this.expressNumber = expressNumber;
     this.sccanedDate = sccanedDate;
@@ -70,21 +65,12 @@ public class ExpressItem {
     return state;
   }
 
-  public void setState(int state) {
-    this.state = state;
-    this.stateEnum = ExpressItemStateEnum.getByFlag(state);
-  }
-
   public ExpressItemStateEnum getStateEnum() {
-    if (this.stateEnum == null) {
-      return ExpressItemStateEnum.getByFlag(state);
-    }
-    return stateEnum;
+    return ExpressItemStateEnum.getByFlag(state);
   }
 
   public void setStateEnum(ExpressItemStateEnum stateEnum) {
-    this.stateEnum = stateEnum;
-    this.state = this.stateEnum == null ? 0 : this.stateEnum.getFlag();
+    this.state = stateEnum.getFlag();
   }
 
   public ExpressBill getExpressBill() {
