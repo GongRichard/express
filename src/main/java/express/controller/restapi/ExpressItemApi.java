@@ -63,9 +63,8 @@ public class ExpressItemApi {
     return item.getExpressItemId();
   }
 
-  @RequestMapping(value = "/expressItem", method = RequestMethod.PUT)
-  public long expressItemUpdate(
-      @RequestParam(value = "expressItemId", defaultValue = "") long expressItemId,
+  @RequestMapping(value = "/expressItem/{expressItemId}", method = RequestMethod.PUT)
+  public long expressItemUpdate(@PathVariable long expressItemId,
       @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum,
       @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
       @RequestParam(value = "sccanedDateLong", defaultValue = "") long sccanedDateLong,

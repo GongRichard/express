@@ -6,7 +6,9 @@ import java.util.List;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.QueryResults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +18,7 @@ import express.dao.SequenceDAO;
 import express.dao.UserDAO;
 import express.entity.SequenceId;
 import express.entity.User;
+import express.entity.vo.UserVO;
 import express.service.hystrix.UserUpsert;
 import express.service.hystrix.UserSearch;
 
@@ -56,18 +59,14 @@ public class UserApi {
         employeeId, staff).execute();
   }
 
-  @RequestMapping(value = "/user", method = RequestMethod.PUT)
-  public long userUpdate(
-      @RequestParam(value = "userId", defaultValue = "0") long userId,
-      @RequestParam(value = "email", defaultValue = "") String email,
-      @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
-      @RequestParam(value = "employeeId", defaultValue = "") String employeeId,
-      @RequestParam(value = "staff", defaultValue = "") boolean staff)
+  @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, 
+      consumes = MediaType.APPLICATION_JSON_VALUE)
+  public long userUpdate(@PathVariable long userId, @RequestBody UserVO user)
       throws Exception {
     if (Long.valueOf(userId) == 0) {
       return 0;
     }
-    return new UserUpsert(userDAO, sequenceDAO, userId, email, mobilePhone,
-        employeeId, staff).execute();
+    return new UserUpsert(userDAO, sequenceDAO, userId, user.getEmail(),
+        user.getMobilePhone(), user.getEmployeeId(), true).execute();
   }
 }
