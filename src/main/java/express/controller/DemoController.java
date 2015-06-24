@@ -41,7 +41,7 @@ public class DemoController {
     user.setEmployeeId("I303152");
     user.setMobilePhone("18616703467");
     long userId = this.userApi.userCreate(user.getEmail(),
-        user.getMobilePhone(), user.getEmployeeId());
+        user.getMobilePhone(), user.getEmployeeId(), true);
     user.setUserId(userId);
     return user;
   }

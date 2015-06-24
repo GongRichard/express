@@ -9,6 +9,7 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 import express.dao.SequenceDAO;
 import express.dao.UserDAO;
 import express.entity.SequenceId;
+import express.entity.StaffRole;
 import express.entity.User;
 
 public class UserUpsert extends HystrixCommand<Long> {
@@ -24,9 +25,11 @@ public class UserUpsert extends HystrixCommand<Long> {
   private String mobilePhone;
 
   private String employeeId;
+  
+  private boolean staffRole;
 
   public UserUpsert(UserDAO userDAO, SequenceDAO sequenceDAO, long userId,
-      String email, String mobilePhone, String employeeId) {
+      String email, String mobilePhone, String employeeId, boolean staffRole) {
     super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
     this.userDAO = userDAO;
     this.sequenceDAO = sequenceDAO;
@@ -34,15 +37,20 @@ public class UserUpsert extends HystrixCommand<Long> {
     this.email = email;
     this.mobilePhone = mobilePhone;
     this.employeeId = employeeId;
+    this.staffRole = staffRole;
   }
 
   @Override
   protected Long run() throws Exception {
+    StaffRole staff = null;
+    if (this.staffRole) {
+      staff = new StaffRole();
+    }
     if (this.userId <= 0) {
       // insert
       long nextUserId = this.sequenceDAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
-      User user = new User(nextUserId, mobilePhone, email, employeeId);
+      User user = new User(nextUserId, mobilePhone, email, employeeId, staff);
       this.userDAO.getBasicDAO().save(user);
       return user.getUserId();
     } else {
@@ -53,6 +61,7 @@ public class UserUpsert extends HystrixCommand<Long> {
       user.setEmail(email);
       user.setEmployeeId(employeeId);
       user.setMobilePhone(mobilePhone);
+      user.setStaffRole(staff);
       this.userDAO.getBasicDAO().save(user);
       return user.getUserId();
     }

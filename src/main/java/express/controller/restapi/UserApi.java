@@ -49,10 +49,11 @@ public class UserApi {
   public long userCreate(
       @RequestParam(value = "email", defaultValue = "") String email,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
-      @RequestParam(value = "employeeId", defaultValue = "") String employeeId)
+      @RequestParam(value = "employeeId", defaultValue = "") String employeeId,
+      @RequestParam(value = "staff", defaultValue = "") boolean staff)
       throws Exception {
     return new UserUpsert(userDAO, sequenceDAO, 0, email, mobilePhone,
-        employeeId).execute();
+        employeeId, staff).execute();
   }
 
   @RequestMapping(value = "/user", method = RequestMethod.PUT)
@@ -60,12 +61,13 @@ public class UserApi {
       @RequestParam(value = "userId", defaultValue = "0") long userId,
       @RequestParam(value = "email", defaultValue = "") String email,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
-      @RequestParam(value = "employeeId", defaultValue = "") String employeeId)
+      @RequestParam(value = "employeeId", defaultValue = "") String employeeId,
+      @RequestParam(value = "staff", defaultValue = "") boolean staff)
       throws Exception {
     if (Long.valueOf(userId) == 0) {
       return 0;
     }
     return new UserUpsert(userDAO, sequenceDAO, userId, email, mobilePhone,
-        employeeId).execute();
+        employeeId, staff).execute();
   }
 }

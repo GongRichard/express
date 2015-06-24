@@ -16,7 +16,7 @@ public class User {
   ObjectId id;
 
   private long userId;
-  
+
   private String mobilePhone;
 
   private String email;
@@ -27,7 +27,10 @@ public class User {
   /* iNumber, cNumber... */
   private String employeeId;
 
-  public User(){
+  @JsonIgnore
+  private StaffRole staffRole;
+
+  public User() {
     super();
   }
 
@@ -37,6 +40,17 @@ public class User {
     this.mobilePhone = mobilePhone;
     this.email = email;
     this.employeeId = employeeId;
+    this.staffRole = null;
+  }
+
+  public User(long userId, String mobilePhone, String email, String employeeId,
+      StaffRole staffRole) {
+    super();
+    this.userId = userId;
+    this.mobilePhone = mobilePhone;
+    this.email = email;
+    this.employeeId = employeeId;
+    this.staffRole = staffRole;
   }
 
   public ObjectId getId() {
@@ -87,4 +101,15 @@ public class User {
     this.expresses = expresses;
   }
 
+  public StaffRole getStaffRole() {
+    return staffRole;
+  }
+
+  public void setStaffRole(StaffRole staffRole) {
+    this.staffRole = staffRole;
+  }
+
+  public boolean getStaff() {
+    return this.staffRole != null;
+  }
 }
