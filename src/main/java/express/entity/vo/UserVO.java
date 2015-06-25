@@ -8,8 +8,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import express.entity.ExpressItem;
 import express.entity.StaffRole;
+import express.entity.User;
 
 public class UserVO {
+
+  private long userId;
 
   private String mobilePhone;
 
@@ -17,7 +20,26 @@ public class UserVO {
 
   private String employeeId;
 
-  private boolean staff;
+  private StaffRoleVO staffRole;
+
+  public UserVO() {
+  }
+
+  public UserVO(User bean) {
+    this.userId = bean.getUserId();
+    this.mobilePhone = bean.getMobilePhone();
+    this.email = bean.getEmail();
+    this.employeeId = bean.getEmployeeId();
+    this.staffRole = new StaffRoleVO(bean.getStaffRole());
+  }
+
+  public long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(long userId) {
+    this.userId = userId;
+  }
 
   public String getMobilePhone() {
     return mobilePhone;
@@ -43,12 +65,12 @@ public class UserVO {
     this.employeeId = employeeId;
   }
 
-  public boolean isStaff() {
-    return staff;
+  public StaffRoleVO getStaffRole() {
+    return staffRole;
   }
 
-  public void setStaff(boolean staff) {
-    this.staff = staff;
+  public void setStaffRole(StaffRoleVO staffRole) {
+    this.staffRole = staffRole;
   }
-  
+
 }

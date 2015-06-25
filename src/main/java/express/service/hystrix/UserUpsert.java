@@ -18,50 +18,32 @@ public class UserUpsert extends HystrixCommand<Long> {
 
   private SequenceDAO sequenceDAO;
 
-  private long userId;
+  private User user;
 
-  private String email;
-
-  private String mobilePhone;
-
-  private String employeeId;
-  
-  private boolean staffRole;
-
-  public UserUpsert(UserDAO userDAO, SequenceDAO sequenceDAO, long userId,
-      String email, String mobilePhone, String employeeId, boolean staffRole) {
+  public UserUpsert(UserDAO userDAO, SequenceDAO sequenceDAO, User user) {
     super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
     this.userDAO = userDAO;
     this.sequenceDAO = sequenceDAO;
-    this.userId = userId;
-    this.email = email;
-    this.mobilePhone = mobilePhone;
-    this.employeeId = employeeId;
-    this.staffRole = staffRole;
+    this.user = user;
   }
 
   @Override
   protected Long run() throws Exception {
-    StaffRole staff = null;
-    if (this.staffRole) {
-      staff = new StaffRole();
-    }
-    if (this.userId <= 0) {
+    if (this.user.getUserId() > 0) {
+      // update
+      Query<User> q = this.userDAO.getBasicDAO().createQuery()
+          .filter("userId =", user.getUserId());
+      User existingUser = this.userDAO.getBasicDAO().find(q).get();
+      existingUser.setEmail(user.getEmail());
+      existingUser.setEmployeeId(user.getEmployeeId());
+      existingUser.setMobilePhone(user.getMobilePhone());
+      existingUser.setStaffRole(user.getStaffRole());
+      this.userDAO.getBasicDAO().save(existingUser);
+      return user.getUserId();
+    } else {
       // insert
       long nextUserId = this.sequenceDAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
-      User user = new User(nextUserId, mobilePhone, email, employeeId, staff);
-      this.userDAO.getBasicDAO().save(user);
-      return user.getUserId();
-    } else {
-      // update
-      Query<User> q = this.userDAO.getBasicDAO().createQuery()
-          .filter("userId =", userId);
-      User user = this.userDAO.getBasicDAO().find(q).get();
-      user.setEmail(email);
-      user.setEmployeeId(employeeId);
-      user.setMobilePhone(mobilePhone);
-      user.setStaffRole(staff);
       this.userDAO.getBasicDAO().save(user);
       return user.getUserId();
     }

@@ -32,11 +32,16 @@ public class UserApi {
   private SequenceDAO sequenceDAO;
 
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.GET)
-  public List<User> userById(@PathVariable long userId) {
+  public UserVO userById(@PathVariable long userId) {
     if (userId == 0)
       return null;
-    return new UserSearch(userDAO, sequenceDAO, userId, null, null, null)
-        .execute();
+    List<User> users = new UserSearch(userDAO, sequenceDAO, userId, null, null,
+        null).execute();
+    if (users.isEmpty()) {
+      return null;
+    }
+    UserVO vo = new UserVO(users.get(0));
+    return vo;
   }
 
   @RequestMapping(value = "/user", method = RequestMethod.GET)
@@ -48,25 +53,26 @@ public class UserApi {
         employeeId).execute();
   }
 
-  @RequestMapping(value = "/user", method = RequestMethod.POST)
-  public long userCreate(
-      @RequestParam(value = "email", defaultValue = "") String email,
-      @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
-      @RequestParam(value = "employeeId", defaultValue = "") String employeeId,
-      @RequestParam(value = "staff", defaultValue = "") boolean staff)
-      throws Exception {
-    return new UserUpsert(userDAO, sequenceDAO, 0, email, mobilePhone,
-        employeeId, staff).execute();
+  @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+  public long userCreate(@RequestBody UserVO userVO) throws Exception {
+    User user = new User(userVO);
+    List<User> sameEmailUser = new UserSearch(userDAO, sequenceDAO, 0,
+        user.getEmail(), "", "").execute();
+    if (!sameEmailUser.isEmpty()) {
+      return sameEmailUser.get(0).getUserId();
+    }
+    return new UserUpsert(userDAO, sequenceDAO, user).execute();
   }
 
-  @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, 
-      consumes = MediaType.APPLICATION_JSON_VALUE)
-  public long userUpdate(@PathVariable long userId, @RequestBody UserVO user)
+  @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+  public long userUpdate(@PathVariable long userId, @RequestBody UserVO userVO)
       throws Exception {
+    User user = new User(userVO);
     if (Long.valueOf(userId) == 0) {
       return 0;
+    } else {
+      user.setUserId(userId);
     }
-    return new UserUpsert(userDAO, sequenceDAO, userId, user.getEmail(),
-        user.getMobilePhone(), user.getEmployeeId(), true).execute();
+    return new UserUpsert(userDAO, sequenceDAO, user).execute();
   }
 }

@@ -9,6 +9,8 @@ import org.mongodb.morphia.annotations.Reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import express.entity.vo.UserVO;
+
 @Entity
 public class User {
   @JsonIgnore
@@ -51,6 +53,14 @@ public class User {
     this.email = email;
     this.employeeId = employeeId;
     this.staffRole = staffRole;
+  }
+  
+  public User(UserVO vo) {
+    this.userId = vo.getUserId();
+    this.mobilePhone = vo.getMobilePhone();
+    this.email = vo.getEmail();
+    this.employeeId = vo.getEmployeeId();
+    this.staffRole = new StaffRole(vo.getStaffRole());
   }
 
   public ObjectId getId() {
