@@ -60,7 +60,9 @@ public class User {
     this.mobilePhone = vo.getMobilePhone();
     this.email = vo.getEmail();
     this.employeeId = vo.getEmployeeId();
-    this.staffRole = new StaffRole(vo.getStaffRole());
+    if (vo.getStaffRole() != null) {
+      this.staffRole = new StaffRole(vo.getStaffRole()); 
+    }
   }
 
   public ObjectId getId() {

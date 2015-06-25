@@ -30,7 +30,9 @@ public class UserVO {
     this.mobilePhone = bean.getMobilePhone();
     this.email = bean.getEmail();
     this.employeeId = bean.getEmployeeId();
-    this.staffRole = new StaffRoleVO(bean.getStaffRole());
+    if (bean.getStaffRole() != null) {
+      this.staffRole = new StaffRoleVO(bean.getStaffRole()); 
+    }
   }
 
   public long getUserId() {

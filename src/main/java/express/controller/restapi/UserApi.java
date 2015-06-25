@@ -45,12 +45,18 @@ public class UserApi {
   }
 
   @RequestMapping(value = "/user", method = RequestMethod.GET)
-  public List<User> user(
+  public List<UserVO> user(
       @RequestParam(value = "email", defaultValue = "") String email,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
       @RequestParam(value = "employeeId", defaultValue = "") String employeeId) {
-    return new UserSearch(userDAO, sequenceDAO, 0, email, mobilePhone,
+    List<User> users = new UserSearch(userDAO, sequenceDAO, 0, email, mobilePhone,
         employeeId).execute();
+    List<UserVO> userVOs = new ArrayList<UserVO>();
+    for (User user : users) {
+      UserVO vo = new UserVO(user);
+      userVOs.add(vo);
+    }
+    return userVOs;
   }
 
   @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)

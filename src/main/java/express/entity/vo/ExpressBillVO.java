@@ -1,5 +1,7 @@
 package express.entity.vo;
 
+import express.entity.ExpressBill;
+
 public class ExpressBillVO {
 
   private String orderNumber;
@@ -12,6 +14,11 @@ public class ExpressBillVO {
     super();
     this.orderNumber = orderNumber;
     this.mobilePhone = mobilePhone;
+  }
+  
+  public ExpressBillVO(ExpressBill bean){
+    this.orderNumber = bean.getOrderNumber();
+    this.mobilePhone = bean.getMobilePhone();
   }
 
   public String getOrderNumber() {

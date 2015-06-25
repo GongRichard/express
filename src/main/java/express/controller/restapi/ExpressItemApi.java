@@ -1,11 +1,13 @@
 package express.controller.restapi;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,9 @@ import express.entity.ExpressItem;
 import express.entity.ExpressItemStateEnum;
 import express.entity.SequenceId;
 import express.entity.User;
+import express.entity.vo.ExpressItemVO;
+import express.entity.vo.UserVO;
+import express.service.ExpressNumberPool;
 import express.service.hystrix.ExpressItemSearch;
 
 @RestController
@@ -31,56 +36,55 @@ public class ExpressItemApi {
   private ExpressItemDAO expressItemDAO;
 
   @RequestMapping(value = "/expressItem/{expressItemId}", method = RequestMethod.GET)
-  public List<ExpressItem> expressItemById(@PathVariable long expressItemId) {
+  public ExpressItemVO expressItemById(@PathVariable long expressItemId) {
     if (expressItemId == 0)
       return null;
-    return new ExpressItemSearch(expressItemDAO, expressItemId, null, null)
-        .execute();
+    List<ExpressItem> item = new ExpressItemSearch(expressItemDAO,
+        expressItemId, null, null).execute();
+    if (item.isEmpty()) {
+      return null;
+    }
+    ExpressItemVO vo = new ExpressItemVO(item.get(0));
+    return vo;
   }
 
   @RequestMapping(value = "/expressItem", method = RequestMethod.GET)
-  public List<ExpressItem> expressItem(
+  public List<ExpressItemVO> expressItem(
       @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
       @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum) {
-    return new ExpressItemSearch(expressItemDAO, 0, expressNumber, stateEnum)
-        .execute();
+    List<ExpressItem> items = new ExpressItemSearch(expressItemDAO, 0,
+        expressNumber, stateEnum).execute();
+    List<ExpressItemVO> itemVOs = new ArrayList<ExpressItemVO>();
+    for (ExpressItem item : items) {
+      itemVOs.add(new ExpressItemVO(item));
+    }
+    return itemVOs;
   }
 
   @RequestMapping(value = "/expressItem", method = RequestMethod.POST)
-  public long expressItemCreate(
-      @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum,
-      @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
-      @RequestParam(value = "sccanedDateLong", defaultValue = "") long sccanedDateLong,
-      @RequestParam(value = "orderNumber", defaultValue = "") String orderNumber,
-      @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone)
+  public long expressItemCreate(@RequestBody ExpressItemVO expressItemVO)
       throws Exception {
-    ExpressBill bill = new ExpressBill(orderNumber, mobilePhone);
+    ExpressItem item = new ExpressItem(expressItemVO);
     long expressItemId = this.sequenceDAO
         .getNextSequenceId(SequenceId.SEQUENCE_EXPRESS_ITEM);
-    ExpressItem item = new ExpressItem(stateEnum, bill, expressNumber,
-        new Date(sccanedDateLong));
+    item.setExpressItemId(expressItemId);
+    int expressNumber = ExpressNumberPool.pullAnAvaliableExpressNumber();
     this.expressItemDAO.getBasicDAO().save(item);
     return item.getExpressItemId();
   }
 
   @RequestMapping(value = "/expressItem/{expressItemId}", method = RequestMethod.PUT)
   public long expressItemUpdate(@PathVariable long expressItemId,
-      @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum,
-      @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
-      @RequestParam(value = "sccanedDateLong", defaultValue = "") long sccanedDateLong,
-      @RequestParam(value = "sccanedDateLong", defaultValue = "") long recievedDateLong,
-      @RequestParam(value = "orderNumber", defaultValue = "") String orderNumber,
-      @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone)
-      throws Exception {
-    ExpressItem item = this.expressItemById(expressItemId).get(0);
-    item.setStateEnum(stateEnum);
-    item.setExpressNumber(expressNumber);
-    item.setSccanedDate(new Date(sccanedDateLong));
-    item.setRecievedDate(new Date(recievedDateLong));
-    ExpressBill bill = item.getExpressBill();
-    bill.setMobilePhone(mobilePhone);
-    bill.setOrderNumber(orderNumber);
-    this.expressItemDAO.getBasicDAO().save(item);
-    return item.getExpressItemId();
+      @RequestBody ExpressItemVO expressItemVO) throws Exception {
+    ExpressItem freshItem = new ExpressItem(expressItemVO);
+    List<ExpressItem> existingItem = this.expressItemDAO
+        .findByExpressItemId(expressItemId);
+    if (existingItem.isEmpty()) {
+      return 0;
+    } else {
+      freshItem.setId(existingItem.get(0).getId());
+    }
+    this.expressItemDAO.getBasicDAO().save(freshItem);
+    return expressItemId;
   }
 }

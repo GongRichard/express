@@ -10,27 +10,25 @@ import org.mongodb.morphia.annotations.Transient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import express.entity.vo.ExpressItemVO;
+
 @Entity
 public class ExpressItem {
 
-  @JsonIgnore
   @Id
   ObjectId id;
   
   private long expressItemId;
 
   /** for DB storage */
-  @JsonIgnore
   private int state = 0;
 
   private ExpressBill expressBill;
 
   private String expressNumber;
 
-  @JsonIgnore
   private Date sccanedDate;
 
-  @JsonIgnore
   private Date recievedDate;
 
   public ExpressItem() {
@@ -43,6 +41,24 @@ public class ExpressItem {
     this.expressBill = expressBill;
     this.expressNumber = expressNumber;
     this.sccanedDate = sccanedDate;
+  }
+  
+  public ExpressItem(ExpressItemStateEnum stateEnum, ExpressBill expressBill,
+      String expressNumber, Date sccanedDate, Date recievedDate) {
+    super();
+    this.state = stateEnum.getFlag();
+    this.expressBill = expressBill;
+    this.expressNumber = expressNumber;
+    this.sccanedDate = sccanedDate;
+    this.recievedDate = recievedDate;
+  }
+  
+  public ExpressItem(ExpressItemVO vo) {
+    this.setStateEnum(vo.getStateEnum());
+    this.expressBill = new ExpressBill(vo.getExpressBill());
+    this.expressNumber = vo.getExpressNumber();
+    this.sccanedDate = new Date(vo.getSccanedDate());
+    this.recievedDate = new Date(vo.getRecievedDate());
   }
 
   public ObjectId getId() {
