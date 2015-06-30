@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.mongodb.MongoClient;
 
 import express.config.SpringMongoConfig;
+import express.entity.ExpressNumberPool;
 
 @Repository
 public class DataStoreFactory {
@@ -22,10 +23,18 @@ public class DataStoreFactory {
   void init() throws UnknownHostException {
     datastore = new Morphia().mapPackage("express.entity").createDatastore(
         new MongoClient(), SpringMongoConfig.DB);
+    initializeExpressNumberPool();
   }
 
   @Bean
   public Datastore datastore() {
     return datastore;
+  }
+  
+  private void initializeExpressNumberPool() {
+    ExpressNumberPool pool = this.datastore.find(ExpressNumberPool.class).get();
+    if (pool == null) {
+      this.datastore.save(new ExpressNumberPool());
+    }
   }
 }

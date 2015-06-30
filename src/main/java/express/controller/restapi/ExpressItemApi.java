@@ -23,7 +23,7 @@ import express.entity.SequenceId;
 import express.entity.User;
 import express.entity.vo.ExpressItemVO;
 import express.entity.vo.UserVO;
-import express.service.ExpressNumberPool;
+import express.service.ExpressNumberPoolService;
 import express.service.hystrix.ExpressItemSearch;
 
 @RestController
@@ -34,6 +34,9 @@ public class ExpressItemApi {
 
   @Autowired
   private ExpressItemDAO expressItemDAO;
+  
+  @Autowired
+  private ExpressNumberPoolService expressNumberPoolSerivce;
 
   @RequestMapping(value = "/expressItem/{expressItemId}", method = RequestMethod.GET)
   public ExpressItemVO expressItemById(@PathVariable long expressItemId) {
@@ -68,7 +71,8 @@ public class ExpressItemApi {
     long expressItemId = this.sequenceDAO
         .getNextSequenceId(SequenceId.SEQUENCE_EXPRESS_ITEM);
     item.setExpressItemId(expressItemId);
-    int expressNumber = ExpressNumberPool.pullAnAvaliableExpressNumber();
+    item.setExpressNumber(expressNumberPoolSerivce
+        .pullAnAvaliableExpressNumber().toString());
     this.expressItemDAO.getBasicDAO().save(item);
     return item.getExpressItemId();
   }
