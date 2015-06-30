@@ -35,8 +35,7 @@ public class UserApi {
   public UserVO userById(@PathVariable long userId) {
     if (userId == 0)
       return null;
-    List<User> users = new UserSearch(userDAO, sequenceDAO, userId, null, null,
-        null).execute();
+    List<User> users = new UserSearch(userId, null, null, null).execute();
     if (users.isEmpty()) {
       return null;
     }
@@ -49,8 +48,8 @@ public class UserApi {
       @RequestParam(value = "email", defaultValue = "") String email,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
       @RequestParam(value = "employeeId", defaultValue = "") String employeeId) {
-    List<User> users = new UserSearch(userDAO, sequenceDAO, 0, email, mobilePhone,
-        employeeId).execute();
+    List<User> users = new UserSearch(0, email, mobilePhone, employeeId)
+        .execute();
     List<UserVO> userVOs = new ArrayList<UserVO>();
     for (User user : users) {
       UserVO vo = new UserVO(user);
@@ -62,12 +61,12 @@ public class UserApi {
   @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
   public long userCreate(@RequestBody UserVO userVO) throws Exception {
     User user = new User(userVO);
-    List<User> sameEmailUser = new UserSearch(userDAO, sequenceDAO, 0,
-        user.getEmail(), "", "").execute();
+    List<User> sameEmailUser = new UserSearch(0, user.getEmail(), "", "")
+        .execute();
     if (!sameEmailUser.isEmpty()) {
       return sameEmailUser.get(0).getUserId();
     }
-    return new UserUpsert(userDAO, sequenceDAO, user).execute();
+    return new UserUpsert(user).execute();
   }
 
   @RequestMapping(value = "/user/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -79,6 +78,6 @@ public class UserApi {
     } else {
       user.setUserId(userId);
     }
-    return new UserUpsert(userDAO, sequenceDAO, user).execute();
+    return new UserUpsert(user).execute();
   }
 }

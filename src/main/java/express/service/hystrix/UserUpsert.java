@@ -19,16 +19,10 @@ import express.util.ContextUtil;
 
 public class UserUpsert extends HystrixCommand<Long> {
 
-  private UserDAO userDAO;
-
-  private SequenceDAO sequenceDAO;
-
   private User user;
 
-  public UserUpsert(UserDAO userDAO, SequenceDAO sequenceDAO, User user) {
+  public UserUpsert(User user) {
     super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
-    this.userDAO = userDAO;
-    this.sequenceDAO = sequenceDAO;
     this.user = user;
   }
 
@@ -36,21 +30,21 @@ public class UserUpsert extends HystrixCommand<Long> {
   protected Long run() throws Exception {
     if (this.user.getUserId() > 0) {
       // update
-      Query<User> q = this.userDAO.getBasicDAO().createQuery()
+      Query<User> q = ContextUtil.USER_DAO.getBasicDAO().createQuery()
           .filter("userId =", user.getUserId());
-      User existingUser = this.userDAO.getBasicDAO().find(q).get();
+      User existingUser = ContextUtil.USER_DAO.getBasicDAO().find(q).get();
       existingUser.setEmail(user.getEmail());
       existingUser.setEmployeeId(user.getEmployeeId());
       existingUser.setMobilePhone(user.getMobilePhone());
       existingUser.setStaffRole(user.getStaffRole());
       existingUser.setExpresses(processExpresses(user));
-      this.userDAO.getBasicDAO().save(existingUser);
+      ContextUtil.USER_DAO.getBasicDAO().save(existingUser);
       return user.getUserId();
     } else {
       // create
-      long nextUserId = this.sequenceDAO
+      long nextUserId = ContextUtil.SEQUENCE_DAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
-      this.userDAO.getBasicDAO().save(user);
+      ContextUtil.USER_DAO.getBasicDAO().save(user);
       return user.getUserId();
     }
   }

@@ -14,23 +14,21 @@ import express.dao.UserDAO;
 import express.entity.ExpressItem;
 import express.entity.ExpressItemStateEnum;
 import express.entity.User;
+import express.util.ContextUtil;
 
 public class ExpressItemSearch extends HystrixCommand<List<ExpressItem>> {
-
-  private ExpressItemDAO expressItemDAO;
 
   private long expressItemId;
 
   private String expressNumber;
-  
+
   private String orderNumber;
 
   private ExpressItemStateEnum stateEnum;
 
-  public ExpressItemSearch(ExpressItemDAO expressItemDAO, long expressItemId,
-      String expressNumber, ExpressItemStateEnum stateEnum, String orderNumber) {
+  public ExpressItemSearch(long expressItemId, String expressNumber,
+      ExpressItemStateEnum stateEnum, String orderNumber) {
     super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
-    this.expressItemDAO = expressItemDAO;
     this.expressItemId = expressItemId;
     this.expressNumber = expressNumber;
     this.stateEnum = stateEnum;
@@ -40,16 +38,16 @@ public class ExpressItemSearch extends HystrixCommand<List<ExpressItem>> {
   @Override
   protected List<ExpressItem> run() throws Exception {
     if (expressItemId > 0) {
-      return this.expressItemDAO.findByExpressItemId(expressItemId);
+      return ContextUtil.EXPRESSITEM_DAO.findByExpressItemId(expressItemId);
     } else {
       if (!expressNumber.isEmpty()) {
-        return this.expressItemDAO.findByExpressNumber(expressNumber);
+        return ContextUtil.EXPRESSITEM_DAO.findByExpressNumber(expressNumber);
       } else if (!orderNumber.isEmpty()) {
-        return this.expressItemDAO.findByOrderNumber(orderNumber);
+        return ContextUtil.EXPRESSITEM_DAO.findByOrderNumber(orderNumber);
       } else if (stateEnum != null) {
-        return this.expressItemDAO.findByStateEnum(stateEnum);
+        return ContextUtil.EXPRESSITEM_DAO.findByStateEnum(stateEnum);
       } else {
-        return this.expressItemDAO.getBasicDAO().find().asList();
+        return ContextUtil.EXPRESSITEM_DAO.getBasicDAO().find().asList();
       }
     }
   }

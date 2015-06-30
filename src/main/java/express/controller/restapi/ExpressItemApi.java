@@ -34,7 +34,7 @@ public class ExpressItemApi {
 
   @Autowired
   private ExpressItemDAO expressItemDAO;
-  
+
   @Autowired
   private ExpressNumberPoolService expressNumberPoolSerivce;
 
@@ -42,8 +42,8 @@ public class ExpressItemApi {
   public ExpressItemVO expressItemById(@PathVariable long expressItemId) {
     if (expressItemId == 0)
       return null;
-    List<ExpressItem> item = new ExpressItemSearch(expressItemDAO,
-        expressItemId, null, null, null).execute();
+    List<ExpressItem> item = new ExpressItemSearch(expressItemId, null, null,
+        null).execute();
     if (item.isEmpty()) {
       return null;
     }
@@ -56,8 +56,8 @@ public class ExpressItemApi {
       @RequestParam(value = "orderNumber", defaultValue = "") String orderNumber,
       @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
       @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum) {
-    List<ExpressItem> items = new ExpressItemSearch(expressItemDAO, 0,
-        expressNumber, stateEnum, orderNumber).execute();
+    List<ExpressItem> items = new ExpressItemSearch(0, expressNumber,
+        stateEnum, orderNumber).execute();
     List<ExpressItemVO> itemVOs = new ArrayList<ExpressItemVO>();
     for (ExpressItem item : items) {
       itemVOs.add(new ExpressItemVO(item));
