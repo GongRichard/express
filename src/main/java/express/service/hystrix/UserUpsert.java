@@ -1,5 +1,8 @@
 package express.service.hystrix;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.mongodb.morphia.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -8,9 +11,11 @@ import com.netflix.hystrix.HystrixCommandGroupKey;
 
 import express.dao.SequenceDAO;
 import express.dao.UserDAO;
+import express.entity.ExpressItem;
 import express.entity.SequenceId;
 import express.entity.StaffRole;
 import express.entity.User;
+import express.util.ContextUtil;
 
 public class UserUpsert extends HystrixCommand<Long> {
 
@@ -38,14 +43,29 @@ public class UserUpsert extends HystrixCommand<Long> {
       existingUser.setEmployeeId(user.getEmployeeId());
       existingUser.setMobilePhone(user.getMobilePhone());
       existingUser.setStaffRole(user.getStaffRole());
+      existingUser.setExpresses(processExpresses(user));
       this.userDAO.getBasicDAO().save(existingUser);
       return user.getUserId();
     } else {
-      // insert
+      // create
       long nextUserId = this.sequenceDAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
       this.userDAO.getBasicDAO().save(user);
       return user.getUserId();
     }
+  }
+
+  private List<ExpressItem> processExpresses(User user) {
+    List<ExpressItem> dbExpresses = new ArrayList<ExpressItem>();
+    if (user.getExpresses() != null) {
+      for (ExpressItem item : user.getExpresses()) {
+        ExpressItem dbItem = ContextUtil.EXPRESSITEM_DAO
+            .findOneByExpressItemId(item.getExpressItemId());
+        dbItem.setBelongUserId(user.getUserId());
+        ContextUtil.EXPRESSITEM_DAO.saveExpressItem(dbItem);
+        dbExpresses.add(dbItem);
+      }
+    }
+    return dbExpresses;
   }
 }

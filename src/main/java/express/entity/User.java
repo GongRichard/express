@@ -1,5 +1,6 @@
 package express.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -9,6 +10,7 @@ import org.mongodb.morphia.annotations.Reference;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import express.entity.vo.ExpressItemVO;
 import express.entity.vo.UserVO;
 
 @Entity
@@ -24,7 +26,7 @@ public class User {
   private String email;
 
   @Reference
-  private List<ExpressItem> expresses;
+  private List<ExpressItem> expresses = new ArrayList<ExpressItem>();
 
   /* iNumber, cNumber... */
   private String employeeId;
@@ -62,6 +64,12 @@ public class User {
     this.employeeId = vo.getEmployeeId();
     if (vo.getStaffRole() != null) {
       this.staffRole = new StaffRole(vo.getStaffRole()); 
+    }
+    if (vo.getExpresses() != null) {
+      for (ExpressItemVO itemVO : vo.getExpresses()) {
+        ExpressItem item = new ExpressItem(itemVO);
+        this.expresses.add(item);
+      }
     }
   }
 

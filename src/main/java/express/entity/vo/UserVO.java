@@ -1,5 +1,6 @@
 package express.entity.vo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.mongodb.morphia.annotations.Reference;
@@ -21,6 +22,8 @@ public class UserVO {
   private String employeeId;
 
   private StaffRoleVO staffRole;
+  
+  private List<ExpressItemVO> expresses = new ArrayList<ExpressItemVO>();
 
   public UserVO() {
   }
@@ -32,6 +35,11 @@ public class UserVO {
     this.employeeId = bean.getEmployeeId();
     if (bean.getStaffRole() != null) {
       this.staffRole = new StaffRoleVO(bean.getStaffRole()); 
+    }
+    if (bean.getExpresses() != null) {
+      for (ExpressItem itemBean : bean.getExpresses()) {
+        this.expresses.add(new ExpressItemVO(itemBean));
+      }
     }
   }
 
@@ -73,6 +81,14 @@ public class UserVO {
 
   public void setStaffRole(StaffRoleVO staffRole) {
     this.staffRole = staffRole;
+  }
+
+  public List<ExpressItemVO> getExpresses() {
+    return expresses;
+  }
+
+  public void setExpresses(List<ExpressItemVO> expresses) {
+    this.expresses = expresses;
   }
 
 }

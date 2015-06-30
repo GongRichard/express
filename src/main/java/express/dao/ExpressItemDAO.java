@@ -50,6 +50,12 @@ public class ExpressItemDAO {
     return this.getBasicDAO().find(q).asList();
   }
   
+  public ExpressItem findOneByExpressItemId(long expressItemId) {
+    Query<ExpressItem> q = this.getBasicDAO().createQuery()
+        .filter("expressItemId =", expressItemId);
+    return this.getBasicDAO().find(q).get();
+  }
+  
   public List<ExpressItem> findByOrderNumber(String orderNumber) {
     return this.datastore.find(ExpressItem.class, "expressBill.orderNumber",
         orderNumber).asList();

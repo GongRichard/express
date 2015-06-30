@@ -30,6 +30,8 @@ public class ExpressItem {
   private Date sccanedDate;
 
   private Date recievedDate;
+  
+  private long belongUserId;
 
   public ExpressItem() {
   }
@@ -59,6 +61,7 @@ public class ExpressItem {
     this.expressNumber = vo.getExpressNumber();
     this.sccanedDate = new Date(vo.getSccanedDate());
     this.recievedDate = new Date(vo.getRecievedDate());
+    this.expressItemId = vo.getExpressItemId();
   }
 
   public ObjectId getId() {
@@ -134,4 +137,13 @@ public class ExpressItem {
     }
     return this.recievedDate.getTime();
   }
+
+  public long getBelongUserId() {
+    return belongUserId;
+  }
+
+  public void setBelongUserId(long belongUserId) {
+    this.belongUserId = belongUserId;
+  }
+
 }
