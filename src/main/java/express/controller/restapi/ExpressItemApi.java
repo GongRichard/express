@@ -43,7 +43,7 @@ public class ExpressItemApi {
     if (expressItemId == 0)
       return null;
     List<ExpressItem> item = new ExpressItemSearch(expressItemDAO,
-        expressItemId, null, null).execute();
+        expressItemId, null, null, null).execute();
     if (item.isEmpty()) {
       return null;
     }
@@ -53,10 +53,11 @@ public class ExpressItemApi {
 
   @RequestMapping(value = "/expressItem", method = RequestMethod.GET)
   public List<ExpressItemVO> expressItem(
+      @RequestParam(value = "orderNumber", defaultValue = "") String orderNumber,
       @RequestParam(value = "expressNumber", defaultValue = "") String expressNumber,
       @RequestParam(value = "stateEnum", defaultValue = "") ExpressItemStateEnum stateEnum) {
     List<ExpressItem> items = new ExpressItemSearch(expressItemDAO, 0,
-        expressNumber, stateEnum).execute();
+        expressNumber, stateEnum, orderNumber).execute();
     List<ExpressItemVO> itemVOs = new ArrayList<ExpressItemVO>();
     for (ExpressItem item : items) {
       itemVOs.add(new ExpressItemVO(item));

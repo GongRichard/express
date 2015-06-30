@@ -22,16 +22,19 @@ public class ExpressItemSearch extends HystrixCommand<List<ExpressItem>> {
   private long expressItemId;
 
   private String expressNumber;
+  
+  private String orderNumber;
 
   private ExpressItemStateEnum stateEnum;
 
   public ExpressItemSearch(ExpressItemDAO expressItemDAO, long expressItemId,
-      String expressNumber, ExpressItemStateEnum stateEnum) {
+      String expressNumber, ExpressItemStateEnum stateEnum, String orderNumber) {
     super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
     this.expressItemDAO = expressItemDAO;
     this.expressItemId = expressItemId;
     this.expressNumber = expressNumber;
     this.stateEnum = stateEnum;
+    this.orderNumber = orderNumber;
   }
 
   @Override
@@ -41,6 +44,8 @@ public class ExpressItemSearch extends HystrixCommand<List<ExpressItem>> {
     } else {
       if (!expressNumber.isEmpty()) {
         return this.expressItemDAO.findByExpressNumber(expressNumber);
+      } else if (!orderNumber.isEmpty()) {
+        return this.expressItemDAO.findByOrderNumber(orderNumber);
       } else if (stateEnum != null) {
         return this.expressItemDAO.findByStateEnum(stateEnum);
       } else {
