@@ -92,4 +92,43 @@ public class ExpressItemApi {
     this.expressItemDAO.getBasicDAO().save(freshItem);
     return expressItemId;
   }
+  
+  @RequestMapping(value = "/expressItem/command/{command}}", method = RequestMethod.PUT)
+  public String expressItemCommand(@PathVariable String command,
+      @RequestParam(value = "userId", defaultValue = "0") long userId,
+      @RequestParam(value = "delegateUserId", defaultValue = "0") long delegateUserId,
+      @RequestParam(value = "expressItemId", defaultValue = "0") long expressItemId) {
+    CommandEnum commandEnum = CommandEnum.getByCommand(command);
+    if (commandEnum == CommandEnum.DELEGATE) {
+      Date recevedDate = new Date();
+      ExpressItem item = this.expressItemDAO.findOneByExpressItemId(expressItemId);
+      item.setDelegateUserId(delegateUserId);
+      item.setRecievedDate(recevedDate);
+      this.expressItemDAO.getBasicDAO().save(item);
+    }
+    return "success!";
+  }
+  
+  private enum CommandEnum {
+    NONE(""), DELEGATE("delegate");
+
+    private String command;
+
+    CommandEnum(String command) {
+      this.command = command;
+    }
+
+    public String getCommand() {
+      return this.command;
+    }
+
+    public static CommandEnum getByCommand(String command) {
+      for (CommandEnum commandEnum : CommandEnum.values()) {
+        if (commandEnum.getCommand().equals(command)) {
+          return commandEnum;
+        }
+      }
+      return CommandEnum.NONE;
+    }
+  }
 }

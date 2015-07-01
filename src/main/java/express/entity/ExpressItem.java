@@ -32,6 +32,8 @@ public class ExpressItem {
   private Date recievedDate;
   
   private long belongUserId;
+  
+  private long delegateUserId;
 
   public ExpressItem() {
   }
@@ -144,6 +146,14 @@ public class ExpressItem {
 
   public void setBelongUserId(long belongUserId) {
     this.belongUserId = belongUserId;
+  }
+
+  public long getDelegateUserId() {
+    return delegateUserId;
+  }
+
+  public void setDelegateUserId(long delegateUserId) {
+    this.delegateUserId = delegateUserId;
   }
 
 }

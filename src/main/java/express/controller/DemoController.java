@@ -34,18 +34,6 @@ public class DemoController {
     return username;
   }
 
-  @RequestMapping("/createUserTest")
-  public User createUserTest() throws Exception {
-    User user = new User();
-    user.setEmail("zonghan.wu@sap.com");
-    user.setEmployeeId("I303152");
-    user.setMobilePhone("18616703467");
-    long userId = this.userApi.userCreate(user.getEmail(),
-        user.getMobilePhone(), user.getEmployeeId(), true);
-    user.setUserId(userId);
-    return user;
-  }
-
   @RequestMapping("/getUserByEmployeeIdTest")
   public User getUserByEmployeeIdTest() {
     User user = this.userDAO.getUserByEmployeeId("I303152");
