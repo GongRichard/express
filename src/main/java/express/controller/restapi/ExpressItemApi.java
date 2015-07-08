@@ -25,12 +25,17 @@ import express.entity.vo.ExpressItemVO;
 import express.entity.vo.UserVO;
 import express.service.ExpressNumberPoolService;
 import express.service.hystrix.ExpressItemSearch;
+import express.service.hystrix.UserSearch;
+import express.service.hystrix.UserUpsert;
 
 @RestController
 public class ExpressItemApi {
 
   @Autowired
   private SequenceDAO sequenceDAO;
+
+  @Autowired
+  private UserDAO userDAO;
 
   @Autowired
   private ExpressItemDAO expressItemDAO;
@@ -101,16 +106,25 @@ public class ExpressItemApi {
     CommandEnum commandEnum = CommandEnum.getByCommand(command);
     if (commandEnum == CommandEnum.DELEGATE) {
       Date recevedDate = new Date();
-      ExpressItem item = this.expressItemDAO.findOneByExpressItemId(expressItemId);
+      ExpressItem item = new ExpressItemSearch(expressItemId, null, null,
+          null).execute().get(0);
       item.setDelegateUserId(delegateUserId);
       item.setRecievedDate(recevedDate);
       this.expressItemDAO.getBasicDAO().save(item);
+    } else if (commandEnum == CommandEnum.SCAN) {
+      User user = new UserSearch(userId, null, null, null).execute().get(0);
+      ExpressItem item = new ExpressItemSearch(expressItemId, null, null, null)
+          .execute().get(0);
+      item.setBelongUserId(userId);
+      this.expressItemDAO.getBasicDAO().save(item);
+      user.getExpresses().add(item);
+      new UserUpsert(user).execute();
     }
     return "success!";
   }
   
   private enum CommandEnum {
-    NONE(""), DELEGATE("delegate");
+    NONE(""), DELEGATE("delegate"), SCAN("scan");
 
     private String command;
 

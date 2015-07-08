@@ -61,8 +61,12 @@ public class ExpressItem {
     this.setStateEnum(vo.getStateEnum());
     this.expressBill = new ExpressBill(vo.getExpressBill());
     this.expressNumber = vo.getExpressNumber();
-    this.sccanedDate = new Date(vo.getSccanedDate());
-    this.recievedDate = new Date(vo.getRecievedDate());
+    if (vo.getSccanedDate() > 0) {
+      this.sccanedDate = new Date(vo.getSccanedDate());
+    }
+    if (vo.getRecievedDate() > 0) {
+      this.recievedDate = new Date(vo.getRecievedDate());
+    }
     this.expressItemId = vo.getExpressItemId();
   }
 
