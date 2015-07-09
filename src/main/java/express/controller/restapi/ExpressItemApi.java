@@ -98,7 +98,7 @@ public class ExpressItemApi {
     return expressItemId;
   }
   
-  @RequestMapping(value = "/expressItem/command/{command}}", method = RequestMethod.PUT)
+  @RequestMapping(value = "/expressItem/command/{command}", method = RequestMethod.PUT)
   public String expressItemCommand(@PathVariable String command,
       @RequestParam(value = "userId", defaultValue = "0") long userId,
       @RequestParam(value = "delegateUserId", defaultValue = "0") long delegateUserId,
@@ -110,21 +110,31 @@ public class ExpressItemApi {
           null).execute().get(0);
       item.setDelegateUserId(delegateUserId);
       item.setRecievedDate(recevedDate);
+      item.setStateEnum(ExpressItemStateEnum.RECIEVED);
       this.expressItemDAO.getBasicDAO().save(item);
     } else if (commandEnum == CommandEnum.SCAN) {
       User user = new UserSearch(userId, null, null, null).execute().get(0);
       ExpressItem item = new ExpressItemSearch(expressItemId, null, null, null)
           .execute().get(0);
       item.setBelongUserId(userId);
+      item.setStateEnum(ExpressItemStateEnum.SCANNED);
       this.expressItemDAO.getBasicDAO().save(item);
       user.getExpresses().add(item);
       new UserUpsert(user).execute();
-    }
+    } else if (commandEnum == CommandEnum.RECEIVE) {
+      User user = new UserSearch(userId, null, null, null).execute().get(0);
+      ExpressItem item = new ExpressItemSearch(expressItemId, null, null, null)
+          .execute().get(0);
+      item.setStateEnum(ExpressItemStateEnum.RECIEVED);
+      this.expressItemDAO.getBasicDAO().save(item);
+      user.getExpresses().add(item);
+      new UserUpsert(user).execute();
+    }   
     return "success!";
   }
   
   private enum CommandEnum {
-    NONE(""), DELEGATE("delegate"), SCAN("scan");
+    NONE(""), DELEGATE("delegate"), SCAN("scan"), RECEIVE("receive");
 
     private String command;
 
