@@ -17,14 +17,16 @@ public class EmailAccountUtil {
   private static int usedTimes = 0;
 
   static {
-    template.add("a476678244@sina.cn");
-    template.add("a4766782441@sina.cn");
-    template.add("a4766782442@sina.cn");
-    template.add("a4766782443@sina.cn");
-    addressPasswordMap.put("a476678244@sina.cn", "sf1234");
-    addressPasswordMap.put("a4766782441@sina.cn", "sf1234");
-    addressPasswordMap.put("a4766782442@sina.cn", "sf1234");
-    addressPasswordMap.put("a4766782443@sina.cn", "sf1234");
+    // template.add("a476678244@sina.cn");
+    // template.add("a4766782441@sina.cn");
+    // template.add("a4766782442@sina.cn");
+    // template.add("a4766782443@sina.cn");
+    // addressPasswordMap.put("a476678244@sina.cn", "sf1234");
+    // addressPasswordMap.put("a4766782441@sina.cn", "sf1234");
+    // addressPasswordMap.put("a4766782442@sina.cn", "sf1234");
+    // addressPasswordMap.put("a4766782443@sina.cn", "sf1234");
+    template.add("zonghan.wu@sap.com");
+    addressPasswordMap.put("zonghan.wu@sap.com", "DCba87653");
     addresses.addAll(template);
   }
 

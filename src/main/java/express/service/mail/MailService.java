@@ -25,11 +25,10 @@ public class MailService {
   public void sendHtmlMail(MailInfo emailInfo) throws Exception {
     Properties props = new Properties();
     props.put("mail.smtp.auth", "true");
-    props.put("mail.smtp.host", "smtp.sina.cn");
+    // props.put("mail.smtp.host", "smtp.sina.cn");
+    props.put("mail.smtp.host", "mail.sap.corp");
 
     String fromAddress = EmailAccountUtil.getAddress();
-    if (fromAddress == null)
-      throw new Exception("Email address used out!");
     String fromPwd = EmailAccountUtil.getPassword(fromAddress);
 
     MyAuthenticator authenticator = new MyAuthenticator(fromAddress, fromPwd);
@@ -39,7 +38,7 @@ public class MailService {
     // define MIME email object
     MimeMessage mimeMessage = new MimeMessage(session);
 
-    mimeMessage.setFrom(new InternetAddress(fromAddress, "SF Sports Club"));
+    mimeMessage.setFrom(new InternetAddress(fromAddress, "Smart Express System"));
 
     mimeMessage.setRecipient(Message.RecipientType.TO, emailInfo.getEmailTo());
     mimeMessage.setRecipients(Message.RecipientType.CC, emailInfo.getEmailCc());
@@ -51,7 +50,6 @@ public class MailService {
 
     MimeBodyPart htmlBodyPart = new MimeBodyPart();
 
-    // set the RegistUrl and ViewGroupUrl replaceAll
     emailInfo.setEmailBody(emailInfo.getEmailBody().replaceAll("contentInfo",
         emailInfo.getEmailContent()));
     emailInfo.setEmailBody(emailInfo.getEmailBody().replaceAll("themeInfo",
@@ -62,8 +60,8 @@ public class MailService {
 
     mp.addBodyPart(htmlBodyPart);
     // set sap header pic
-    FileDataSource sapPic = new FileDataSource(new File("sap.jpg"
-        + "images/email/sap.jpg"));
+    FileDataSource sapPic = new FileDataSource(new File(MailInfo.class
+        .getClassLoader().getResource("sap.jpg").getPath()));
     MimeBodyPart sapPicBodyPart = new MimeBodyPart();
     sapPicBodyPart.setDataHandler(new DataHandler(sapPic));
     sapPicBodyPart.setContentID("sapPic");

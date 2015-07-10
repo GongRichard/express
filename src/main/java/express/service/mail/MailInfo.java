@@ -1,5 +1,8 @@
 package express.service.mail;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,7 +22,7 @@ public class MailInfo {
 
   public MailInfo(String emailSubject, String type) {
     this.emailSubject = emailSubject;
-    this.emailBody = MailUtil.getEmailBody();
+    this.emailBody = getEmailBodyStream();
   }
 
   public void setEmailSubject(String emailSubject) {
@@ -90,4 +93,21 @@ public class MailInfo {
     this.emailTheme = emailTheme;
   }
 
+  private static String getEmailBodyStream() {
+    try {
+      String emailFilePath = MailInfo.class.getClassLoader()
+          .getResource("email.html").getPath();
+      FileInputStream fileinputstream = new FileInputStream(emailFilePath);
+      int lenght = fileinputstream.available();
+      byte[] bytes = new byte[lenght];
+      lenght = fileinputstream.read(bytes);
+      fileinputstream.close();
+      return new String(bytes, 0, lenght);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 }
