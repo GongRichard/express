@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import org.apache.commons.lang.StringUtils;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Criteria;
 import org.mongodb.morphia.query.Query;
@@ -47,7 +48,7 @@ public class UserDAO {
   }
 
   public List<User> FindByFields(String email, String employeeId,
-      String mobilePhone) {
+      String mobilePhone, String office) {
     Query<User> q = this.basicDAO.createQuery();
     if (!email.isEmpty()) {
       q = q.filter("email =", email);
@@ -57,6 +58,9 @@ public class UserDAO {
     }
     if (!mobilePhone.isEmpty()) {
       q = q.filter("mobilePhone =", mobilePhone);
+    }
+    if (!StringUtils.isBlank(office)) {
+      q.filter("office =", office);
     }
     QueryResults<User> results = this.basicDAO.find(q);
     return results.asList();

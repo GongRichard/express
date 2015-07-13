@@ -15,7 +15,7 @@ import express.entity.vo.UserVO;
 
 @Entity
 public class User {
-  @JsonIgnore
+
   @Id
   ObjectId id;
 
@@ -31,8 +31,9 @@ public class User {
   /* iNumber, cNumber... */
   private String employeeId;
 
-  @JsonIgnore
   private StaffRole staffRole;
+  
+  private String office;
 
   public User() {
     super();
@@ -71,6 +72,7 @@ public class User {
         this.expresses.add(item);
       }
     }
+    this.office = vo.getOffice();
   }
 
   public ObjectId getId() {
@@ -131,5 +133,13 @@ public class User {
 
   public boolean getStaff() {
     return this.staffRole != null;
+  }
+
+  public String getOffice() {
+    return office;
+  }
+
+  public void setOffice(String office) {
+    this.office = office;
   }
 }

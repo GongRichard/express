@@ -23,6 +23,8 @@ public class UserSearch extends HystrixCommand<List<User>> {
   private String mobilePhone;
 
   private String employeeId;
+  
+  private String office;
 
   public UserSearch(long userId, String email, String mobilePhone,
       String employeeId) {
@@ -31,6 +33,16 @@ public class UserSearch extends HystrixCommand<List<User>> {
     this.email = email;
     this.mobilePhone = mobilePhone;
     this.employeeId = employeeId;
+  }
+  
+  public UserSearch(long userId, String email, String mobilePhone,
+      String employeeId, String office) {
+    super(HystrixCommandGroupKey.Factory.asKey("UserMgmtGroup"));
+    this.userId = userId;
+    this.email = email;
+    this.mobilePhone = mobilePhone;
+    this.employeeId = employeeId;
+    this.office = office;
   }
 
   @Override
@@ -42,7 +54,8 @@ public class UserSearch extends HystrixCommand<List<User>> {
       return ContextUtil.USER_DAO.getBasicDAO().find(q).asList();
     } else {
       // get by fields or get all
-      return ContextUtil.USER_DAO.FindByFields(email, employeeId, mobilePhone);
+      return ContextUtil.USER_DAO.FindByFields(email, employeeId, mobilePhone,
+          office);
     }
   }
 }

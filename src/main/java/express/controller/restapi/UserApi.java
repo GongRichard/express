@@ -47,8 +47,9 @@ public class UserApi {
   public List<UserVO> user(
       @RequestParam(value = "email", defaultValue = "") String email,
       @RequestParam(value = "mobilePhone", defaultValue = "") String mobilePhone,
-      @RequestParam(value = "employeeId", defaultValue = "") String employeeId) {
-    List<User> users = new UserSearch(0, email, mobilePhone, employeeId)
+      @RequestParam(value = "employeeId", defaultValue = "") String employeeId,
+      @RequestParam(value = "office", defaultValue = "") String office) {
+    List<User> users = new UserSearch(0, email, mobilePhone, employeeId, office)
         .execute();
     List<UserVO> userVOs = new ArrayList<UserVO>();
     for (User user : users) {

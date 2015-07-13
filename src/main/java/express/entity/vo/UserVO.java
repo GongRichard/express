@@ -24,6 +24,8 @@ public class UserVO {
   private StaffRoleVO staffRole;
   
   private List<ExpressItemVO> expresses = new ArrayList<ExpressItemVO>();
+  
+  private String office;
 
   public UserVO() {
   }
@@ -41,6 +43,7 @@ public class UserVO {
         this.expresses.add(new ExpressItemVO(itemBean));
       }
     }
+    this.office = bean.getOffice();
   }
 
   public long getUserId() {
@@ -89,6 +92,14 @@ public class UserVO {
 
   public void setExpresses(List<ExpressItemVO> expresses) {
     this.expresses = expresses;
+  }
+
+  public String getOffice() {
+    return office;
+  }
+
+  public void setOffice(String office) {
+    this.office = office;
   }
 
 }
