@@ -1,12 +1,12 @@
 # Smart Express
 
 To-do items:
-1. express number buffer pool
-2. staff role
-3. delegate
+1. express number buffer pool (Done)
+2. staff role (Done)
+3. delegate (Done)
 4. batch: email
 5. collect not recieved express and send email
-6. find express by expressBill number
+6. find express by expressBill number (Done)
 
 Theme:
 Pain-point: 
@@ -20,3 +20,10 @@ SAP Lab China现在大约有3000人，这么多人的快递管理现在是纯手
 梦想:
 我们要解决这个痛点，我们设计的系统首先是无纸化，所有的信息都track到系统中，然后对于员工可以直接用ID-Card来取快递，对于邮件收发室的同事可以用扫描枪和我们的系统来跟踪快递状态，快递消息的通知完全自动发送，不仅包括邮件，还有微信和Whatsapp的通知，还可以帮助同事代领快递。我们的远期目标是打算探索无人机送快递的可能性，明年在SAP Lab China做一次live demo.
 另外，这个系统是基于云的，也可以在sap的其他site上使用。
+
+Setup steps:
+1.Download and install mongodb
+2.Install Maven, configure proxy for Maven to make it work in SAP network.
+3.Run "mvn install" to build.
+4.Copy "express-1.0.war" from "target" folder to "tomcat path"/webapps
+5.Start tomcat
