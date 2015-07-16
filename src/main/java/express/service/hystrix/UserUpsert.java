@@ -44,6 +44,7 @@ public class UserUpsert extends HystrixCommand<Long> {
       // create
       long nextUserId = ContextUtil.SEQUENCE_DAO
           .getNextSequenceId(SequenceId.SEQUENCE_USER);
+      user.setUserId(nextUserId);
       ContextUtil.USER_DAO.getBasicDAO().save(user);
       return user.getUserId();
     }

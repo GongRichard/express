@@ -62,8 +62,8 @@ public class UserApi {
   @RequestMapping(value = "/user", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
   public long userCreate(@RequestBody UserVO userVO) throws Exception {
     User user = new User(userVO);
-    List<User> sameEmailUser = new UserSearch(0, user.getEmail(), "", "")
-        .execute();
+    List<User> sameEmailUser = new UserSearch(0, user.getEmail(), "", "",
+        user.getOffice()).execute();
     if (!sameEmailUser.isEmpty()) {
       return sameEmailUser.get(0).getUserId();
     }
